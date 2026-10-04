@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { subscribeToNewsletter } from '@/services/api';
 
 export default function Footer() {
@@ -57,102 +58,137 @@ export default function Footer() {
                 />
                 <button
                   type="submit"
-                  className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.18em] px-space-lg py-space-sm hover:bg-tertiary-container transition-colors"
+                  disabled={loading}
+                  className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.18em] px-space-lg py-space-sm hover:bg-tertiary-container transition-colors disabled:opacity-50"
                 >
-                  Subscribe
+                  {loading ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
+            )}
+            {message && !subscribed && (
+              <p className="text-xs text-error mt-2 font-label-caps">{message}</p>
             )}
           </div>
         </div>
 
-        {/* Links Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-xl pb-space-2xl border-b border-surface-container-high">
+        {/* 4 Columns Footer Navigation */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-xl pb-space-2xl border-b border-surface-container-high">
+          {/* Column 1: SHOP */}
           <div className="flex flex-col">
-            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold">
-              Shop
+            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
+              SHOP
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#products">Perfumes & Extraits</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/fragrance">Fragrance</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#products">Skincare & Elixirs</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/beauty">Skincare</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#products">Botanical Body Care</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/beauty?category=makeup">Makeup</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#products">Ritual Bathing Sets</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/beauty?category=body">Body Care</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#products">The Discovery Vault</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/shop">Beauty Essentials</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/hampers">Hampers</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/combos">Combos</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/shop?badge=Bestseller">Best Sellers</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/shop?badge=New">New Arrivals</Link>
               </li>
             </ul>
           </div>
 
+          {/* Column 2: DISCOVER */}
           <div className="flex flex-col">
-            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold">
-              Services & Atelier
+            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
+              DISCOVER
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Fragrance Consultation</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/collections">Collections</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Bespoke Gifting Concierge</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/discover">Beauty Finder</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Private Atelier Appointments</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/discover#finder">Fragrance Finder</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Atelier Locator (Mumbai & Delhi)</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/journal">Beauty Guide</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/journal">Fragrance Guide</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/journal">Journal</Link>
               </li>
             </ul>
           </div>
 
+          {/* Column 3: CUSTOMER CARE */}
           <div className="flex flex-col">
-            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold">
-              Assistance
+            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
+              CUSTOMER CARE
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#">Order Status & Tracking</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about#locations">Contact Us</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#">Complimentary Shipping</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/account">Order Tracking</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#">Returns & Exchanges</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/checkout">Shipping</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#">Authenticity & Archival Care</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">Returns & Exchanges</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">FAQs</Link>
               </li>
             </ul>
           </div>
 
+          {/* Column 4: ABOUT */}
           <div className="flex flex-col">
-            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold">
-              The House
+            <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
+              ABOUT
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Our Story & Lineage</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">Our Story</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#finder">Indian Botanicals Index</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">Our Philosophy</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#craft">Ethical Wildcrafting</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/journal">Ingredients</Link>
               </li>
-              <li className="hover:text-on-surface transition-colors">
-                <a href="#">Press & Monograph Editorial</a>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">Sustainability</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/journal">Press</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about">Careers</Link>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Copyright Bar */}
         <div className="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md font-body text-xs text-on-surface-variant">
           <div className="flex flex-col sm:flex-row items-center gap-space-sm text-center sm:text-left">
             <span>© 2025 VĀNYA HAUTE PARFUMERIE PVT LTD. ALL RIGHTS RESERVED.</span>

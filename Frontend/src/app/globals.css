@@ -16,3 +16,48 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* Luxury Seamless Infinite Marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes gentle-arrow {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-gentle-arrow {
+  display: inline-block;
+  animation: gentle-arrow 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+  .animate-gentle-arrow {
+    animation: none !important;
+  }
+}

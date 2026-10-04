@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 const accords = [
   { name: 'Woody & Resinous', notes: 'Mysore Sandalwood, Teak Vat Resin, Cedarwood', mood: 'Grounding & Contemplative' },
@@ -13,7 +14,7 @@ export default function FragranceFinder() {
   const [selectedAccord, setSelectedAccord] = useState(0);
 
   return (
-    <section id="finder" className="w-full bg-surface py-space-3xl">
+    <section id="finder" className="w-full bg-surface py-space-2xl">
       <div className="max-w-7xl mx-auto px-margin lg:px-margin-desktop">
         <div className="text-center max-w-2xl mx-auto mb-space-2xl">
           <span className="font-label-caps text-label-caps uppercase tracking-[0.25em] text-secondary font-semibold">
@@ -27,7 +28,7 @@ export default function FragranceFinder() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-space-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-space-2xl">
           {accords.map((accord, idx) => (
             <button
               key={accord.name}
@@ -55,22 +56,22 @@ export default function FragranceFinder() {
         </div>
 
         {/* Selected Accord Details */}
-        <div className="bg-surface-container-low p-space-2xl border border-surface-container-high grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+        <div className="bg-surface-container-low p-space-xl border border-surface-container-high grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
           <div className="lg:col-span-8">
-            <span className="font-label-caps text-xs uppercase tracking-widest text-secondary block mb-2">
+            <span className="font-label-caps text-xs uppercase tracking-widest text-secondary block mb-2 font-semibold">
               Accord Breakdown
             </span>
-            <h4 className="font-display text-3xl text-primary mb-4">
+            <h4 className="font-display text-3xl text-primary mb-3">
               {accords[selectedAccord].name}
             </h4>
-            <p className="font-editorial-serif text-lg text-on-surface-variant mb-6">
+            <p className="font-editorial-serif text-lg text-on-surface-variant mb-4">
               Dominant Botanicals: {accords[selectedAccord].notes}
             </p>
-            <div className="flex items-center gap-space-md">
+            <div className="flex flex-wrap items-center gap-space-md">
               <span className="font-label-caps text-xs uppercase tracking-wider text-primary">
                 Sillage: <strong className="text-secondary font-semibold">Intense & Lingering</strong>
               </span>
-              <span className="text-outline">•</span>
+              <span className="text-outline hidden sm:inline">•</span>
               <span className="font-label-caps text-xs uppercase tracking-wider text-primary">
                 Distillation: <strong className="text-secondary font-semibold">Hydro-Steam</strong>
               </span>
@@ -78,12 +79,12 @@ export default function FragranceFinder() {
           </div>
 
           <div className="lg:col-span-4 flex justify-start lg:justify-end">
-            <a
-              href="#products"
-              className="inline-flex items-center justify-center bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.18em] px-space-xl py-4 hover:bg-tertiary-container transition-colors"
+            <Link
+              href="/fragrance"
+              className="inline-flex items-center justify-center bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.18em] px-space-xl py-4 hover:bg-tertiary-container transition-colors shadow-md"
             >
               Discover Matching Flacons
-            </a>
+            </Link>
           </div>
         </div>
       </div>

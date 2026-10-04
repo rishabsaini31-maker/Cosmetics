@@ -1,3 +1,7 @@
+'use client';
+
+import Link from 'next/link';
+
 export default function Hero() {
   return (
     <section className="relative w-full bg-surface-bright pb-space-3xl overflow-hidden">
@@ -19,18 +23,18 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-space-md mb-space-2xl">
-              <a
-                href="#products"
-                className="inline-flex items-center justify-center bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-[0.18em] px-space-xl py-4 hover:bg-tertiary-container transition-colors duration-200"
+              <Link
+                href="/shop"
+                className="inline-flex items-center justify-center bg-primary text-on-primary font-label-caps text-label-caps uppercase tracking-[0.18em] px-space-xl py-4 hover:bg-tertiary-container transition-colors duration-200 shadow-md"
               >
                 Explore Perfumes
-              </a>
-              <a
-                href="#craft"
+              </Link>
+              <Link
+                href="/about"
                 className="inline-flex items-center justify-center bg-surface-container-lowest text-primary font-label-caps text-label-caps uppercase tracking-[0.18em] px-space-xl py-4 shadow-sm hover:bg-surface-container transition-colors duration-200 border border-surface-container-high"
               >
                 The Atelier
-              </a>
+              </Link>
             </div>
 
             {/* Olfactory Triad Accent */}
@@ -47,11 +51,11 @@ export default function Hero() {
 
           {/* Hero Visual Showcase */}
           <div className="lg:col-span-6 relative mt-space-lg lg:mt-0">
-            <div className="relative w-full aspect-[3/4] bg-surface-container-low overflow-hidden shadow-xl border border-surface-container-high">
+            <Link href="/product/prod-01" className="block relative w-full aspect-[3/4] bg-surface-container-low overflow-hidden shadow-xl border border-surface-container-high group">
               <img
                 src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1200&auto=format&fit=crop"
                 alt="Amber glass fluted perfume flacon resting upon natural sand travertine stone"
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent p-space-lg text-on-primary flex items-end justify-between">
                 <div>
@@ -64,7 +68,7 @@ export default function Hero() {
                   Pure Parfum
                 </span>
               </div>
-            </div>
+            </Link>
 
             {/* Floating Monograph Tag */}
             <div className="absolute -top-4 -right-4 bg-surface-container-lowest p-space-md shadow-md hidden sm:block max-w-[210px] border border-surface-container-high">

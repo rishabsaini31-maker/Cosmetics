@@ -1,3 +1,7 @@
+'use client';
+
+import Link from 'next/link';
+
 const categories = [
   {
     num: '01',
@@ -63,9 +67,9 @@ export default function Categories() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter-desktop">
           {categories.map((cat) => (
-            <a
+            <Link
               key={cat.num}
-              href="#products"
+              href="/shop"
               className="group relative bg-surface-container-lowest p-space-md flex flex-col shadow-sm hover:shadow-md transition-all duration-300 border border-surface-container-high"
             >
               <div className="aspect-[3/4] bg-surface-container overflow-hidden relative mb-space-md">
@@ -89,7 +93,7 @@ export default function Categories() {
               <p className="font-body text-xs text-on-surface-variant mt-space-xs leading-relaxed">
                 {cat.desc}
               </p>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
