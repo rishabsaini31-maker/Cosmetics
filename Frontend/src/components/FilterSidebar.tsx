@@ -322,6 +322,16 @@ export default function FilterSidebar({
             className="w-4 h-4 accent-primary cursor-pointer"
           />
         </div>
+
+        {/* 7. AUTHENTICITY GUARANTEED SEAL */}
+        <div className="bg-surface-container-low/70 border border-surface-container-high p-space-md text-center mt-space-lg">
+          <span className="font-label-caps text-[0.625rem] uppercase tracking-[0.2em] font-bold text-secondary block mb-1">
+            AUTHENTICITY GUARANTEED
+          </span>
+          <p className="font-body text-[0.7rem] text-on-surface-variant leading-tight">
+            Each batch authenticated with physical batch stamp & handwritten seal.
+          </p>
+        </div>
       </div>
     </aside>
   );

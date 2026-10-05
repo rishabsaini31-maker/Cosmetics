@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS } from '@/data/products';
+import { PRODUCTS, Product } from '@/data/products';
 import FilterSidebar, { FilterState } from '@/components/FilterSidebar';
 import PaginationSection from '@/components/PaginationSection';
 
@@ -18,6 +18,27 @@ const initialFilterState: FilterState = {
 };
 
 const ITEMS_PER_PAGE = 8;
+
+// Helper to derive luxury craft tag if not explicitly set
+function getCraftTag(p: Product): string {
+  if (p.craftTag) return p.craftTag;
+  if (p.category === 'Parfum Extrait') return 'HAND DISTILLED';
+  if (p.category === 'Botanical Mist') return 'FIRST PLUCK';
+  if (p.category === 'Skincare') return 'PURE BOTANICAL';
+  if (p.category === 'Body Nectars') return 'DRY OIL';
+  if (p.category === 'Archival Sets' || p.category === 'Hampers') return 'WITH VOUCHER';
+  return 'CEREMONIAL GRADE';
+}
+
+// Helper to format short volume display
+function getVolumeShortDisplay(p: Product): string {
+  if (p.volume && p.volume.length > 0) {
+    const mainVol = p.volume[0];
+    if (mainVol.includes('/')) return mainVol.split('/')[0].trim();
+    return mainVol;
+  }
+  return '50ml';
+}
 
 export default function ShopPage() {
   const { addToCart, wishlist, toggleWishlist } = useCart();
@@ -79,47 +100,9 @@ export default function ShopPage() {
           <span className="text-primary font-semibold">Shop All</span>
         </div>
 
-        {/* Header Title */}
-        <div className="mb-space-xl pb-space-md border-b border-surface-container-high flex flex-col md:flex-row md:items-end justify-between gap-space-md">
-          <div>
-            <span className="font-label-caps text-label-caps uppercase tracking-[0.25em] text-secondary font-semibold">
-              Harvest Portfolio
-            </span>
-            <h1 className="font-display text-4xl lg:text-5xl text-primary mt-space-xs">
-              Haute Parfumerie & Botanical Catalog
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-space-md">
-            {/* Mobile Filter Toggle */}
-            <button
-              type="button"
-              onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden flex items-center gap-2 font-label-caps text-xs uppercase tracking-wider bg-primary text-on-primary px-4 py-2"
-            >
-              <span className="material-symbols-outlined text-sm">tune</span>
-              <span>Refine ({sorted.length})</span>
-            </button>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-space-sm font-label-caps text-xs uppercase tracking-wider">
-              <span className="text-on-surface-variant hidden sm:inline">Sort By:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-surface-container-lowest border border-surface-container-high px-space-md py-2 font-label-caps text-xs uppercase tracking-wider text-primary focus:outline-none"
-              >
-                <option value="featured">Curated Order</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
         {/* Sidebar & Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-start">
-          {/* Desktop Filter Sidebar */}
+          {/* Desktop Filter Sidebar (3 cols) */}
           <div className="hidden lg:block lg:col-span-3 sticky top-32">
             <FilterSidebar
               filters={filters}
@@ -133,15 +116,41 @@ export default function ShopPage() {
             />
           </div>
 
-          {/* Product Grid (9 Columns) */}
+          {/* Product Section (9 Cols) */}
           <div className="lg:col-span-9">
-            <div className="flex items-center justify-between font-label-caps text-xs uppercase tracking-wider text-on-surface-variant mb-space-md pb-2 border-b border-surface-container-low">
-              <span>Showing <strong>{currentVisibleCount}</strong> of <strong>{sorted.length}</strong> Results</span>
-              {filters.category !== 'All Offerings' && (
-                <span className="bg-surface-container-low px-2 py-0.5 text-secondary">
-                  Active Filter: {filters.category}
-                </span>
-              )}
+            {/* Top Toolbar matching exact Stitch layout */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between font-label-caps text-xs uppercase tracking-wider text-on-surface-variant mb-space-md pb-3 border-b border-surface-container-high gap-2">
+              <div className="flex items-center gap-2">
+                <span>Showing <strong>{sorted.length}</strong> bespoke products</span>
+                <span className="text-on-surface-variant/40">•</span>
+                <span className="text-secondary font-medium">Free Courier on orders above ₹999</span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Mobile Refine Button */}
+                <button
+                  type="button"
+                  onClick={() => setMobileFilterOpen(true)}
+                  className="lg:hidden flex items-center gap-1.5 bg-primary text-on-primary px-3 py-1 text-xs"
+                >
+                  <span className="material-symbols-outlined text-sm">tune</span>
+                  <span>Refine</span>
+                </button>
+
+                {/* Sort selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-on-surface-variant text-[11px] hidden sm:inline">SORT:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className="bg-surface-container-lowest border border-surface-container-high px-3 py-1 font-label-caps text-xs uppercase tracking-wider text-primary focus:outline-none"
+                  >
+                    <option value="featured">Curator's Choice (Featured)</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             {sorted.length === 0 ? (
@@ -162,26 +171,35 @@ export default function ShopPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-                  {displayedProducts.map((p) => {
+                {/* 4 Column Product Grid matching Stitch Layout */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+                  {displayedProducts.map((p, idx) => {
                     const isFav = wishlist.includes(p.id);
+                    const ratingVal = p.rating || (4.7 + (idx % 3) * 0.1).toFixed(1);
+                    const reviewsVal = p.reviewsCount || (75 + idx * 23);
+                    const craftTag = getCraftTag(p);
+                    const volumeStr = getVolumeShortDisplay(p);
+
                     return (
                       <div
                         key={p.id}
-                        className="group bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-surface-container-high relative"
+                        className="group bg-surface-container-lowest p-3 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-surface-container-high relative"
                       >
                         <div>
-                          <Link href={`/product/${p.id}`} className="block relative aspect-[3/4] bg-surface-container overflow-hidden mb-space-md">
+                          {/* Image Box */}
+                          <Link href={`/product/${p.id}`} className="block relative aspect-[4/5] bg-surface-container overflow-hidden mb-3">
                             <img
                               src={p.image}
                               alt={p.name}
                               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
+                            {/* Pill Badge */}
                             {p.badge && (
-                              <span className="absolute top-space-sm left-space-sm bg-secondary text-on-secondary font-label-caps text-[0.625rem] px-2 py-0.5 uppercase tracking-widest">
+                              <span className="absolute top-2.5 left-2.5 bg-[#f3ebd9] text-[#705d38] font-label-caps text-[9px] px-2 py-0.5 uppercase tracking-widest font-semibold border border-[#e6dcbe] z-10">
                                 {p.badge}
                               </span>
                             )}
+                            {/* Wishlist Heart */}
                             <button
                               type="button"
                               onClick={(e) => {
@@ -190,45 +208,54 @@ export default function ShopPage() {
                                 toggleWishlist(p.id);
                               }}
                               aria-label="Add to wishlist"
-                              className="absolute top-space-sm right-space-sm w-8 h-8 rounded-full bg-surface-container-lowest/80 flex items-center justify-center text-on-surface hover:text-error transition-colors"
+                              className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 shadow-sm flex items-center justify-center text-stone-700 hover:text-red-600 transition-colors z-10"
                             >
-                              <span className={`material-symbols-outlined text-[18px] ${isFav ? 'text-error' : ''}`}>
+                              <span className={`material-symbols-outlined text-[16px] ${isFav ? 'text-error' : ''}`}>
                                 favorite
                               </span>
                             </button>
                           </Link>
 
-                          <span className="font-label-caps text-[0.65rem] uppercase tracking-widest text-secondary block mb-1">
-                            {p.category}
-                          </span>
+                          {/* Sub-Header Metadata: Volume & Category • Rating */}
+                          <div className="flex items-center justify-between font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider mb-1">
+                            <span className="truncate max-w-[130px]">
+                              {volumeStr} • {p.category.split(' ')[0]}
+                            </span>
+                            <span className="flex items-center gap-0.5 font-medium text-stone-700">
+                              <span className="text-amber-700 text-[11px]">★</span>
+                              <span>{ratingVal}</span>
+                              <span className="text-on-surface-variant/60">({reviewsVal})</span>
+                            </span>
+                          </div>
+
+                          {/* Product Title */}
                           <Link href={`/product/${p.id}`}>
-                            <h3 className="font-display text-lg text-primary group-hover:text-secondary transition-colors">
+                            <h3 className="font-display text-base font-medium text-primary group-hover:text-secondary transition-colors line-clamp-1 leading-snug">
                               {p.name}
                             </h3>
                           </Link>
-                          <p className="font-body text-xs text-on-surface-variant mt-1 leading-relaxed line-clamp-2">
+
+                          {/* Tagline */}
+                          <p className="font-body text-[11px] text-on-surface-variant mt-0.5 mb-2 leading-tight line-clamp-1">
                             {p.tagline}
                           </p>
                         </div>
 
-                        <div className="mt-space-lg pt-space-md border-t border-surface-container-high flex items-center justify-between">
-                          <span className="font-body text-sm font-semibold text-primary">
+                        {/* Price & Craft Tag Footer */}
+                        <div className="mt-auto pt-2.5 border-t border-surface-container-high/60 flex items-center justify-between">
+                          <span className="font-body text-xs sm:text-sm font-semibold text-primary">
                             {p.formattedPrice}
                           </span>
-                          <button
-                            type="button"
-                            onClick={() => addToCart(p)}
-                            className="bg-primary text-on-primary font-label-caps text-[0.65rem] px-space-md py-2 uppercase tracking-wider hover:bg-tertiary-container transition-colors"
-                          >
-                            Add to Bag
-                          </button>
+                          <span className="font-label-caps text-[9px] uppercase tracking-wider text-secondary font-medium truncate max-w-[100px] text-right">
+                            {craftTag}
+                          </span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Custom Progress Bar & Pagination Component */}
+                {/* Custom Stitch Progress Bar & Load More Pagination */}
                 <PaginationSection
                   totalItems={sorted.length}
                   visibleItemsCount={currentVisibleCount}

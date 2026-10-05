@@ -22,6 +22,9 @@ export interface Product {
   ingredients: string[];
   includedProducts?: string[];
   occasion?: string;
+  rating?: number;
+  reviewsCount?: number;
+  craftTag?: string;
 }
 
 export const PRODUCTS: Product[] = [
