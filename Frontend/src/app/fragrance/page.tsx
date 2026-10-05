@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS, Product } from '@/data/products';
+import { PRODUCTS } from '@/data/products';
 import FilterSidebar, { FilterState } from '@/components/FilterSidebar';
+import PaginationSection from '@/components/PaginationSection';
 
 const initialFilterState: FilterState = {
   category: 'Perfumes & Extraits',
@@ -16,10 +17,14 @@ const initialFilterState: FilterState = {
   inStockOnly: false,
 };
 
+const ITEMS_PER_PAGE = 6;
+
 export default function FragrancePage() {
   const { addToCart, wishlist, toggleWishlist } = useCart();
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const fragranceProducts = PRODUCTS.filter((p) => {
     if (p.category !== 'Parfum Extrait' && p.category !== 'Botanical Mist') return false;
@@ -27,7 +32,26 @@ export default function FragrancePage() {
     return true;
   });
 
-  const handleResetFilters = () => setFilters(initialFilterState);
+  const totalPages = Math.ceil(fragranceProducts.length / ITEMS_PER_PAGE) || 1;
+  const currentVisibleCount = Math.min(visibleCount, fragranceProducts.length);
+  const displayedProducts = fragranceProducts.slice(0, currentVisibleCount);
+
+  const handleResetFilters = () => {
+    setFilters(initialFilterState);
+    setCurrentPage(1);
+    setVisibleCount(ITEMS_PER_PAGE);
+  };
+
+  const handleLoadMore = () => {
+    const nextCount = Math.min(visibleCount + ITEMS_PER_PAGE, fragranceProducts.length);
+    setVisibleCount(nextCount);
+    setCurrentPage(Math.ceil(nextCount / ITEMS_PER_PAGE));
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setVisibleCount(page * ITEMS_PER_PAGE);
+  };
 
   return (
     <main className="w-full bg-surface min-h-screen pb-space-3xl">
@@ -61,7 +85,11 @@ export default function FragrancePage() {
           <div className="hidden lg:block lg:col-span-3 sticky top-32">
             <FilterSidebar
               filters={filters}
-              onFilterChange={setFilters}
+              onFilterChange={(f) => {
+                setFilters(f);
+                setCurrentPage(1);
+                setVisibleCount(ITEMS_PER_PAGE);
+              }}
               onReset={handleResetFilters}
               totalResults={PRODUCTS.length}
             />
@@ -70,7 +98,7 @@ export default function FragrancePage() {
           {/* Product Grid */}
           <div className="lg:col-span-9">
             <div className="flex items-center justify-between font-label-caps text-xs uppercase tracking-wider text-on-surface-variant mb-space-md pb-2 border-b border-surface-container-low">
-              <span>Showing <strong>{fragranceProducts.length}</strong> Olfactory Flacons</span>
+              <span>Showing <strong>{currentVisibleCount}</strong> of <strong>{fragranceProducts.length}</strong> Olfactory Flacons</span>
               <button
                 type="button"
                 onClick={() => setMobileFilterOpen(true)}
@@ -81,7 +109,7 @@ export default function FragrancePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-              {fragranceProducts.map((p) => {
+              {displayedProducts.map((p) => {
                 const isFav = wishlist.includes(p.id);
                 return (
                   <div
@@ -144,6 +172,18 @@ export default function FragrancePage() {
                 );
               })}
             </div>
+
+            {/* Pagination Component */}
+            <PaginationSection
+              totalItems={fragranceProducts.length}
+              visibleItemsCount={currentVisibleCount}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              onLoadMore={handleLoadMore}
+              hasMore={currentVisibleCount < fragranceProducts.length}
+              itemLabel="CREATIONS"
+            />
           </div>
         </div>
       </div>
@@ -162,7 +202,11 @@ export default function FragrancePage() {
             <div className="mt-8">
               <FilterSidebar
                 filters={filters}
-                onFilterChange={setFilters}
+                onFilterChange={(f) => {
+                  setFilters(f);
+                  setCurrentPage(1);
+                  setVisibleCount(ITEMS_PER_PAGE);
+                }}
                 onReset={handleResetFilters}
                 totalResults={PRODUCTS.length}
               />

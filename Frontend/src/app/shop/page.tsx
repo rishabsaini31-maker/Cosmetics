@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS, Product } from '@/data/products';
+import { PRODUCTS } from '@/data/products';
 import FilterSidebar, { FilterState } from '@/components/FilterSidebar';
+import PaginationSection from '@/components/PaginationSection';
 
 const initialFilterState: FilterState = {
   category: 'All Offerings',
@@ -16,15 +17,18 @@ const initialFilterState: FilterState = {
   inStockOnly: false,
 };
 
+const ITEMS_PER_PAGE = 8;
+
 export default function ShopPage() {
   const { addToCart, wishlist, toggleWishlist } = useCart();
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high'>('featured');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // Filtering Logic
   const filtered = PRODUCTS.filter((p) => {
-    // 1. Category filter
     if (filters.category !== 'All Offerings' && filters.category !== 'All') {
       if (filters.category === 'Perfumes & Extraits' && p.category !== 'Parfum Extrait') return false;
       if (filters.category === 'Botanical Mists' && p.category !== 'Botanical Mist') return false;
@@ -33,14 +37,7 @@ export default function ShopPage() {
       if (filters.category === 'Discovery Sets' && p.category !== 'Archival Sets') return false;
     }
 
-    // 2. Price filter
     if (p.price > filters.maxPrice) return false;
-
-    // 3. Volume filter
-    if (filters.volume && !p.volume.some((v) => v.toLowerCase().includes(filters.volume!.toLowerCase().split(' ')[0]))) {
-      // Soft check on volume
-    }
-
     return true;
   });
 
@@ -51,7 +48,26 @@ export default function ShopPage() {
     return 0;
   });
 
-  const handleResetFilters = () => setFilters(initialFilterState);
+  const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE) || 1;
+  const currentVisibleCount = Math.min(visibleCount, sorted.length);
+  const displayedProducts = sorted.slice(0, currentVisibleCount);
+
+  const handleResetFilters = () => {
+    setFilters(initialFilterState);
+    setCurrentPage(1);
+    setVisibleCount(ITEMS_PER_PAGE);
+  };
+
+  const handleLoadMore = () => {
+    const nextCount = Math.min(visibleCount + ITEMS_PER_PAGE, sorted.length);
+    setVisibleCount(nextCount);
+    setCurrentPage(Math.ceil(nextCount / ITEMS_PER_PAGE));
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setVisibleCount(page * ITEMS_PER_PAGE);
+  };
 
   return (
     <main className="w-full bg-surface min-h-screen pb-space-3xl">
@@ -107,7 +123,11 @@ export default function ShopPage() {
           <div className="hidden lg:block lg:col-span-3 sticky top-32">
             <FilterSidebar
               filters={filters}
-              onFilterChange={setFilters}
+              onFilterChange={(f) => {
+                setFilters(f);
+                setCurrentPage(1);
+                setVisibleCount(ITEMS_PER_PAGE);
+              }}
               onReset={handleResetFilters}
               totalResults={PRODUCTS.length}
             />
@@ -116,7 +136,7 @@ export default function ShopPage() {
           {/* Product Grid (9 Columns) */}
           <div className="lg:col-span-9">
             <div className="flex items-center justify-between font-label-caps text-xs uppercase tracking-wider text-on-surface-variant mb-space-md pb-2 border-b border-surface-container-low">
-              <span>Showing <strong>{sorted.length}</strong> Results</span>
+              <span>Showing <strong>{currentVisibleCount}</strong> of <strong>{sorted.length}</strong> Results</span>
               {filters.category !== 'All Offerings' && (
                 <span className="bg-surface-container-low px-2 py-0.5 text-secondary">
                   Active Filter: {filters.category}
@@ -141,71 +161,85 @@ export default function ShopPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-                {sorted.map((p) => {
-                  const isFav = wishlist.includes(p.id);
-                  return (
-                    <div
-                      key={p.id}
-                      className="group bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-surface-container-high relative"
-                    >
-                      <div>
-                        <Link href={`/product/${p.id}`} className="block relative aspect-[3/4] bg-surface-container overflow-hidden mb-space-md">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          />
-                          {p.badge && (
-                            <span className="absolute top-space-sm left-space-sm bg-secondary text-on-secondary font-label-caps text-[0.625rem] px-2 py-0.5 uppercase tracking-widest">
-                              {p.badge}
-                            </span>
-                          )}
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                  {displayedProducts.map((p) => {
+                    const isFav = wishlist.includes(p.id);
+                    return (
+                      <div
+                        key={p.id}
+                        className="group bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-surface-container-high relative"
+                      >
+                        <div>
+                          <Link href={`/product/${p.id}`} className="block relative aspect-[3/4] bg-surface-container overflow-hidden mb-space-md">
+                            <img
+                              src={p.image}
+                              alt={p.name}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            {p.badge && (
+                              <span className="absolute top-space-sm left-space-sm bg-secondary text-on-secondary font-label-caps text-[0.625rem] px-2 py-0.5 uppercase tracking-widest">
+                                {p.badge}
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleWishlist(p.id);
+                              }}
+                              aria-label="Add to wishlist"
+                              className="absolute top-space-sm right-space-sm w-8 h-8 rounded-full bg-surface-container-lowest/80 flex items-center justify-center text-on-surface hover:text-error transition-colors"
+                            >
+                              <span className={`material-symbols-outlined text-[18px] ${isFav ? 'text-error' : ''}`}>
+                                favorite
+                              </span>
+                            </button>
+                          </Link>
+
+                          <span className="font-label-caps text-[0.65rem] uppercase tracking-widest text-secondary block mb-1">
+                            {p.category}
+                          </span>
+                          <Link href={`/product/${p.id}`}>
+                            <h3 className="font-display text-lg text-primary group-hover:text-secondary transition-colors">
+                              {p.name}
+                            </h3>
+                          </Link>
+                          <p className="font-body text-xs text-on-surface-variant mt-1 leading-relaxed line-clamp-2">
+                            {p.tagline}
+                          </p>
+                        </div>
+
+                        <div className="mt-space-lg pt-space-md border-t border-surface-container-high flex items-center justify-between">
+                          <span className="font-body text-sm font-semibold text-primary">
+                            {p.formattedPrice}
+                          </span>
                           <button
                             type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              toggleWishlist(p.id);
-                            }}
-                            aria-label="Add to wishlist"
-                            className="absolute top-space-sm right-space-sm w-8 h-8 rounded-full bg-surface-container-lowest/80 flex items-center justify-center text-on-surface hover:text-error transition-colors"
+                            onClick={() => addToCart(p)}
+                            className="bg-primary text-on-primary font-label-caps text-[0.65rem] px-space-md py-2 uppercase tracking-wider hover:bg-tertiary-container transition-colors"
                           >
-                            <span className={`material-symbols-outlined text-[18px] ${isFav ? 'text-error' : ''}`}>
-                              favorite
-                            </span>
+                            Add to Bag
                           </button>
-                        </Link>
-
-                        <span className="font-label-caps text-[0.65rem] uppercase tracking-widest text-secondary block mb-1">
-                          {p.category}
-                        </span>
-                        <Link href={`/product/${p.id}`}>
-                          <h3 className="font-display text-lg text-primary group-hover:text-secondary transition-colors">
-                            {p.name}
-                          </h3>
-                        </Link>
-                        <p className="font-body text-xs text-on-surface-variant mt-1 leading-relaxed line-clamp-2">
-                          {p.tagline}
-                        </p>
+                        </div>
                       </div>
+                    );
+                  })}
+                </div>
 
-                      <div className="mt-space-lg pt-space-md border-t border-surface-container-high flex items-center justify-between">
-                        <span className="font-body text-sm font-semibold text-primary">
-                          {p.formattedPrice}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => addToCart(p)}
-                          className="bg-primary text-on-primary font-label-caps text-[0.65rem] px-space-md py-2 uppercase tracking-wider hover:bg-tertiary-container transition-colors"
-                        >
-                          Add to Bag
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                {/* Custom Progress Bar & Pagination Component */}
+                <PaginationSection
+                  totalItems={sorted.length}
+                  visibleItemsCount={currentVisibleCount}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  onLoadMore={handleLoadMore}
+                  hasMore={currentVisibleCount < sorted.length}
+                  itemLabel="CREATIONS"
+                />
+              </>
             )}
           </div>
         </div>
@@ -225,7 +259,11 @@ export default function ShopPage() {
             <div className="mt-8">
               <FilterSidebar
                 filters={filters}
-                onFilterChange={setFilters}
+                onFilterChange={(f) => {
+                  setFilters(f);
+                  setCurrentPage(1);
+                  setVisibleCount(ITEMS_PER_PAGE);
+                }}
                 onReset={handleResetFilters}
                 totalResults={PRODUCTS.length}
               />
