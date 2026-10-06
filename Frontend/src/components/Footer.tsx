@@ -166,26 +166,29 @@ export default function Footer() {
           {/* Column 4: ABOUT */}
           <div className="flex flex-col">
             <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
-              ABOUT
+              <Link href="/about" className="hover:text-secondary transition-colors">ABOUT</Link>
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">Our Story</Link>
+                <Link href="/about/our-story">Our Story</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">Our Philosophy</Link>
+                <Link href="/about/our-philosophy">Our Philosophy</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/journal">Ingredients</Link>
+                <Link href="/about/ingredients">Ingredients & Formulation</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">Sustainability</Link>
+                <Link href="/about/craft-and-sourcing">Craft & Sourcing</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/journal">Press</Link>
+                <Link href="/about/sustainability">Sustainability</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">Careers</Link>
+                <Link href="/about/press">Press</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/about/careers">Careers</Link>
               </li>
             </ul>
           </div>
