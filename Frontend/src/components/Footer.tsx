@@ -139,23 +139,26 @@ export default function Footer() {
           {/* Column 3: CUSTOMER CARE */}
           <div className="flex flex-col">
             <h4 className="font-label-caps text-xs uppercase tracking-[0.2em] text-primary mb-space-lg font-bold pb-2 border-b border-surface-container-high">
-              CUSTOMER CARE
+              <Link href="/customer-care" className="hover:text-secondary transition-colors">CUSTOMER CARE</Link>
             </h4>
             <ul className="flex flex-col gap-space-sm font-body text-xs text-on-surface-variant">
               <li className="hover:text-primary transition-colors">
-                <Link href="/about#locations">Contact Us</Link>
+                <Link href="/contact">Contact Us</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/account">Order Tracking</Link>
+                <Link href="/track-order">Order Tracking</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/checkout">Shipping</Link>
+                <Link href="/shipping">Shipping & Delivery</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">Returns & Exchanges</Link>
+                <Link href="/returns">Returns & Exchanges</Link>
               </li>
               <li className="hover:text-primary transition-colors">
-                <Link href="/about">FAQs</Link>
+                <Link href="/payment-security">Payment & Security</Link>
+              </li>
+              <li className="hover:text-primary transition-colors">
+                <Link href="/faqs">FAQs</Link>
               </li>
             </ul>
           </div>
