@@ -1,16 +1,29 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 const DATA_FILE = path.join(__dirname, '../data/users.json');
 
-// Ensure data directory and users.json exist
+// Ensure storage exists and seed default super admin
 function ensureStorage() {
   const dir = path.dirname(DATA_FILE);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
   if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), 'utf8');
+    // Seed default admin account
+    const defaultAdmin = {
+      id: 'usr_admin_master_01',
+      name: 'VĀNYA Master Admin',
+      email: 'admin@vanya.com',
+      password: bcrypt.hashSync('admin123', 10),
+      isVerified: true,
+      otp: null,
+      otpExpiresAt: null,
+      role: 'admin',
+      createdAt: new Date().toISOString(),
+    };
+    fs.writeFileSync(DATA_FILE, JSON.stringify([defaultAdmin], null, 2), 'utf8');
   }
 }
 
@@ -51,7 +64,7 @@ function createUser(userData) {
     id: `usr_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
     name: userData.name,
     email: userData.email.toLowerCase().trim(),
-    password: userData.password, // Expect hashed password
+    password: userData.password, // Hashed password
     isVerified: userData.isVerified || false,
     otp: userData.otp || null,
     otpExpiresAt: userData.otpExpiresAt || null,
@@ -74,6 +87,13 @@ function updateUser(id, updateData) {
   return users[index];
 }
 
+function deleteUser(id) {
+  let users = getAllUsers();
+  users = users.filter((u) => u.id !== id);
+  saveUsers(users);
+  return true;
+}
+
 function sanitizeUser(user) {
   if (!user) return null;
   const { password, otp, otpExpiresAt, ...safeUser } = user;
@@ -86,5 +106,6 @@ module.exports = {
   findUserById,
   createUser,
   updateUser,
+  deleteUser,
   sanitizeUser,
 };

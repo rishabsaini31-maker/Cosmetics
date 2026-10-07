@@ -361,6 +361,10 @@ export default function Header() {
                     <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
                       <span>Account Passport</span>
                     </Link>
+                    <Link href="/admin" onClick={() => setProfileOpen(false)} className="py-1.5 text-secondary font-label-caps uppercase tracking-wider font-bold hover:text-primary transition-colors flex items-center justify-between border-y border-surface-container-high my-1 py-2">
+                      <span>⚡ Admin Operations Hub</span>
+                      <span>→</span>
+                    </Link>
                     <Link href="/track-order" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
                       <span>Order Tracking</span>
                     </Link>
