@@ -1,0 +1,24 @@
+[
+  {
+    "id": "usr_1791378464401_gextas",
+    "name": "Rishab Saini",
+    "email": "rishab@vanya.com",
+    "password": "$2b$10$e9dmOh/lYNd5445yrA2rtu4zYFqYZPJ0ZHhNENHQHi7CEKbvj3p3C",
+    "isVerified": true,
+    "otp": null,
+    "otpExpiresAt": null,
+    "role": "user",
+    "createdAt": "2026-10-07T13:07:44.402Z"
+  },
+  {
+    "id": "usr_1791379520033_2b2j5s",
+    "name": "Ananya Sharma",
+    "email": "ananya@vanya.com",
+    "password": "$2b$10$7irOjA6aBLZX9VQDM55q0ermnUyJi2iHWc3ty0g3F88J.KB0Vy69.",
+    "isVerified": true,
+    "otp": null,
+    "otpExpiresAt": null,
+    "role": "user",
+    "createdAt": "2026-10-07T13:25:20.033Z"
+  }
+]

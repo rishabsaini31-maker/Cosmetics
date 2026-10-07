@@ -4,17 +4,18 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { PRODUCTS } from '@/data/products';
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { itemCount, wishlist, openCart } = useCart();
+  const { user, logout, openAuthModal } = useAuth();
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Demo user state
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -322,105 +323,66 @@ export default function Header() {
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setProfileOpen(!profileOpen)}
+                onClick={() => {
+                  if (user) {
+                    setProfileOpen(!profileOpen);
+                  } else {
+                    openAuthModal('login');
+                  }
+                }}
                 aria-label="Account Profile"
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors relative ${
                   profileOpen || pathname === '/account'
                     ? 'bg-secondary text-on-secondary'
                     : 'bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary'
                 }`}
               >
                 <span className="material-symbols-outlined text-[18px]">person</span>
+                {user && (
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-surface rounded-full" />
+                )}
               </button>
 
               {/* Profile Dropdown Menu */}
-              {profileOpen && (
+              {profileOpen && user && (
                 <div
                   className="absolute top-full right-0 mt-3 w-64 bg-surface-container-lowest border border-surface-container-high shadow-2xl p-space-md z-50 animate-in fade-in duration-150"
                   onMouseLeave={() => setProfileOpen(false)}
                 >
-                  {isLoggedIn ? (
-                    <div className="flex flex-col gap-1 font-body text-xs text-on-surface-variant">
-                      <div className="pb-2 mb-2 border-b border-surface-container-high">
-                        <span className="font-display text-sm text-primary font-semibold block">Rishab Saini</span>
-                        <span className="text-[0.65rem] text-secondary font-label-caps uppercase tracking-wider">Archival Member</span>
-                      </div>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Profile</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Orders</span>
-                      </Link>
-                      <Link href="/wishlist" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Wishlist</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Saved Addresses</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Beauty Preferences</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Fragrance Preferences</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Recently Viewed</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Account Settings</span>
-                      </Link>
-                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Notifications</span>
-                      </Link>
-                      <Link href="/about#locations" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                        <span>Help & Support</span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsLoggedIn(false);
-                          setProfileOpen(false);
-                        }}
-                        className="py-2 mt-1 border-t border-surface-container-high text-left font-label-caps text-xs uppercase tracking-wider text-error hover:underline"
-                      >
-                        Sign Out
-                      </button>
+                  <div className="flex flex-col gap-1 font-body text-xs text-on-surface-variant">
+                    <div className="pb-2 mb-2 border-b border-surface-container-high">
+                      <span className="font-display text-sm text-primary font-semibold block">{user.name}</span>
+                      <span className="text-[0.6875rem] text-on-surface-variant block font-mono">{user.email}</span>
+                      <span className="inline-block mt-1 text-[0.625rem] text-secondary font-label-caps uppercase tracking-wider bg-surface-container px-2 py-0.5 border border-surface-container-high">
+                        Verified Patron Passport
+                      </span>
                     </div>
-                  ) : (
-                    <div className="flex flex-col gap-2 font-body text-xs text-on-surface-variant">
-                      <span className="font-display text-base text-primary font-semibold block">Welcome</span>
-                      <p className="text-on-surface-variant text-xs mb-1">
-                        Sign in to access your orders, private vault & preferences.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsLoggedIn(true);
-                          setProfileOpen(false);
-                        }}
-                        className="bg-primary text-on-primary font-label-caps text-xs py-2 uppercase tracking-widest text-center"
-                      >
-                        Sign In
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsLoggedIn(true);
-                          setProfileOpen(false);
-                        }}
-                        className="bg-surface-container-low text-primary border border-surface-container-high font-label-caps text-xs py-2 uppercase tracking-widest text-center hover:bg-surface-container"
-                      >
-                        Create Account
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setProfileOpen(false)}
-                        className="text-center font-label-caps text-[0.65rem] uppercase tracking-wider text-outline hover:text-primary pt-1"
-                      >
-                        Continue as Guest
-                      </button>
-                    </div>
-                  )}
+
+                    <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                      <span>Account Passport</span>
+                    </Link>
+                    <Link href="/track-order" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                      <span>Order Tracking</span>
+                    </Link>
+                    <Link href="/wishlist" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                      <span>Saved Flacons ({wishlist.length})</span>
+                    </Link>
+                    <Link href="/customer-care" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                      <span>Customer Care</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setProfileOpen(false);
+                      }}
+                      className="py-2 mt-2 border-t border-surface-container-high text-left font-label-caps text-xs uppercase tracking-wider text-error hover:underline flex items-center justify-between"
+                    >
+                      <span>Sign Out</span>
+                      <span>→</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
