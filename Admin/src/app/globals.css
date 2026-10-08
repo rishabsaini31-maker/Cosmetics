@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    overscroll-behavior: none;
+    background-color: #fbf9f5;
+    color: #1b1c1a;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
