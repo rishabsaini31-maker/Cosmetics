@@ -1,0 +1,69 @@
+{
+  "announcements": [
+    "COMPLIMENTARY SHIPPING ABOVE ₹999",
+    "BESPOKE PACKAGING & ARTISANAL SAMPLES INCLUDED",
+    "DISCOVER BEAUTY & FRAGRANCE",
+    "CURATED HAMPERS FOR EVERY OCCASION",
+    "EXPLORE SIGNATURE COMBOS"
+  ],
+  "homepage": {
+    "hero": {
+      "eyebrow": "VĀNYA HAUTE PARFUMERIE",
+      "headline": "BEAUTY, FRAGRANCE & THE ART OF RITUAL",
+      "description": "Indian botanical luxury, slow hydro-distillations, and haute perfumery crafted in small batches.",
+      "primaryCta": "EXPLORE SHOP",
+      "primaryCtaLink": "/shop",
+      "secondaryCta": "DISCOVER FRAGRANCES",
+      "secondaryCtaLink": "/fragrance"
+    },
+    "sectionsOrder": [
+      "announcementBar",
+      "hero",
+      "featuredProducts",
+      "fragranceSection",
+      "beautySection",
+      "hampers",
+      "combos",
+      "giftingEdit",
+      "editorialBanner",
+      "newsletter"
+    ]
+  },
+  "navigation": [
+    {
+      "label": "SHOP",
+      "href": "/shop",
+      "visible": true
+    },
+    {
+      "label": "FRAGRANCE",
+      "href": "/fragrance",
+      "visible": true
+    },
+    {
+      "label": "BEAUTY",
+      "href": "/beauty",
+      "visible": true
+    },
+    {
+      "label": "HAMPERS",
+      "href": "/hampers",
+      "visible": true
+    },
+    {
+      "label": "COMBOS",
+      "href": "/combos",
+      "visible": true
+    },
+    {
+      "label": "DISCOVER",
+      "href": "/discover",
+      "visible": true
+    },
+    {
+      "label": "ABOUT",
+      "href": "/about",
+      "visible": true
+    }
+  ]
+}

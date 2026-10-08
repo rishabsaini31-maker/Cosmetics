@@ -220,8 +220,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="font-label-caps text-[0.625rem] uppercase tracking-[0.25em] text-secondary font-semibold hidden sm:block">
                 VĀNYA ADMIN HUB
               </span>
-              <h1 className="font-display text-xl sm:text-2xl text-primary font-medium capitalize">
-                {pathname === '/admin' ? 'Dashboard Command Center' : (pathname || '').replace('/admin/', '').replace(/-/g, ' ')}
+              <h1 className="font-display text-xl sm:text-2xl text-primary font-medium">
+                {pathname === '/' || pathname === '/admin' ? 'Dashboard' : (pathname || '').replace(/^\/admin\/?/, '').replace('/', '').replace(/-/g, ' ')}
               </h1>
             </div>
           </div>

@@ -65,23 +65,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { label: 'Navigation', href: '/content/navigation', icon: 'menu' },
         { label: 'Pages', href: '/content/pages', icon: 'description' },
         { label: 'Journal', href: '/content/journal', icon: 'menu_book' },
-        { label: 'Banners', href: '/content/announcement', icon: 'subtitles' },
       ],
     },
     {
       group: 'DESIGN',
       items: [
         { label: 'Theme', href: '/theme', icon: 'palette' },
-        { label: 'Announcement Bar', href: '/content/announcement', icon: 'campaign' },
         { label: 'Media Library', href: '/media', icon: 'photo_library' },
+        { label: 'Announcement Bar', href: '/content/announcement', icon: 'campaign' },
+        { label: 'Footer', href: '/content/footer', icon: 'view_agenda' },
       ],
     },
     {
       group: 'SYSTEM',
       items: [
         { label: 'Users & Roles', href: '/users', icon: 'admin_panel_settings' },
-        { label: 'Settings', href: '/settings', icon: 'settings' },
         { label: 'Activity Log', href: '/activity', icon: 'history' },
+        { label: 'Notifications', href: '/notifications', icon: 'notifications' },
+        { label: 'Settings', href: '/settings', icon: 'settings' },
       ],
     },
   ];
@@ -185,8 +186,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="font-label-caps text-[0.625rem] uppercase tracking-[0.25em] text-secondary font-semibold hidden sm:block">
                 VĀNYA ADMIN HUB
               </span>
-              <h1 className="font-display text-xl sm:text-2xl text-primary font-medium capitalize">
-                {pathname === '/' ? 'Dashboard Command Center' : (pathname || '').replace('/', '').replace(/-/g, ' ')}
+              <h1 className="font-display text-xl sm:text-2xl text-primary font-medium">
+                {pathname === '/' || pathname === '/admin' ? 'Dashboard' : (pathname || '').replace(/^\/admin\/?/, '').replace('/', '').replace(/-/g, ' ')}
               </h1>
             </div>
           </div>

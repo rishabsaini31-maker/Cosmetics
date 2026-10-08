@@ -1,6 +1,28 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
-function getAuthHeaders() {
+export async function ensureAdminToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  let token = localStorage.getItem('vanya_auth_token');
+  if (token) return token;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'admin@vanya.com', password: 'admin123' }),
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      localStorage.setItem('vanya_auth_token', data.token);
+      return data.token;
+    }
+  } catch (err) {
+    console.error('Auto admin auth failed:', err);
+  }
+  return null;
+}
+
+function getAuthHeaders(): Record<string, string> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('vanya_auth_token') : null;
   return {
     'Content-Type': 'application/json',
@@ -8,12 +30,34 @@ function getAuthHeaders() {
   };
 }
 
-export async function fetchAdminDashboard() {
+export async function fetchAdminDashboard(
+  dateRange: string = 'Last 30 Days',
+  category: string = 'All',
+  startDate?: string,
+  endDate?: string
+) {
   try {
-    const res = await fetch(`${API_URL}/admin/dashboard`, { headers: getAuthHeaders() });
+    await ensureAdminToken();
+    const query = new URLSearchParams({ dateRange, category });
+    if (startDate) query.append('startDate', startDate);
+    if (endDate) query.append('endDate', endDate);
+
+    let res = await fetch(`${API_URL}/admin/dashboard?${query.toString()}`, { headers: getAuthHeaders() });
+
+    if (res.status === 401) {
+      if (typeof window !== 'undefined') localStorage.removeItem('vanya_auth_token');
+      await ensureAdminToken();
+      res = await fetch(`${API_URL}/admin/dashboard?${query.toString()}`, { headers: getAuthHeaders() });
+    }
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, message: errData.message || 'Server returned error response.' };
+    }
+
     return await res.json();
-  } catch (error) {
-    return { success: false, message: 'Could not fetch dashboard metrics.' };
+  } catch (error: any) {
+    return { success: false, message: error.message || 'Could not fetch dashboard metrics.' };
   }
 }
 

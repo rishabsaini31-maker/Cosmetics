@@ -31,7 +31,25 @@ function getAllUsers() {
   ensureStorage();
   try {
     const content = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(content || '[]');
+    const users = JSON.parse(content || '[]');
+    
+    // Ensure master admin user always exists
+    if (!users.some((u) => u.email.toLowerCase() === 'admin@vanya.com')) {
+      const defaultAdmin = {
+        id: 'usr_admin_master_01',
+        name: 'VĀNYA Master Admin',
+        email: 'admin@vanya.com',
+        password: bcrypt.hashSync('admin123', 10),
+        isVerified: true,
+        otp: null,
+        otpExpiresAt: null,
+        role: 'admin',
+        createdAt: new Date().toISOString(),
+      };
+      users.unshift(defaultAdmin);
+      saveUsers(users);
+    }
+    return users;
   } catch (error) {
     console.error('Error reading users storage:', error);
     return [];

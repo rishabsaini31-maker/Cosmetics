@@ -1,0 +1,18 @@
+[
+  {
+    "id": "act-01",
+    "admin": "VĀNYA Master Admin",
+    "action": "Product Updated",
+    "resource": "NOIR 01 Eau de Parfum",
+    "timestamp": "2026-10-08T09:32:13.211Z",
+    "status": "Success"
+  },
+  {
+    "id": "act-02",
+    "admin": "VĀNYA Master Admin",
+    "action": "Order Status Changed",
+    "resource": "Order #VNY-10294 (Processing)",
+    "timestamp": "2026-10-08T08:32:13.211Z",
+    "status": "Success"
+  }
+]

@@ -27,6 +27,60 @@ const DEFAULT_PAGES: Record<string, EditorialPageConfig> = {
     bodyText: 'Founded with a reverent vision for Indian flora, VĀNYA captures pure floral extracts, wild-harvested roots, and rare woods. Every bottle is a ode to patience, ritual, and unhurried craftsmanship.',
     published: true,
   },
+  fragrance: {
+    id: 'fragrance',
+    title: 'Fragrance Collection Page',
+    subtitle: 'Artisanal Parfum Extraits & Hydro-distillations',
+    heroImage: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1200&auto=format&fit=crop',
+    quote: 'Rare olfactory compositions distilled in Kannauj copper degs.',
+    bodyText: 'Our fragrance collection showcases extraits de parfum formulated with pure absolutes of rose, vetiver, jasmine, and Mysore sandalwood.',
+    published: true,
+  },
+  skincare: {
+    id: 'skincare',
+    title: 'Skincare & Beauty Page',
+    subtitle: 'Kashmiri Saffron, Sandalwood & Cold-Pressed Oils',
+    heroImage: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1200&auto=format&fit=crop',
+    quote: 'High-performance botanical chemistry rooted in royal Ayurvedic beauty rituals.',
+    bodyText: 'Nourishing facial elixirs, lip salves, night creams, and botanical mist sprays created for lasting luminosity.',
+    published: true,
+  },
+  makeup: {
+    id: 'makeup',
+    title: 'Makeup & Color Rituals Page',
+    subtitle: 'Luminous Balms & Botanical Tint Pigments',
+    heroImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1200&auto=format&fit=crop',
+    quote: 'Pure plant pigments infused with cold-pressed rosehip and saffron oils.',
+    bodyText: 'Breathable lip tints, cheek stains, and illuminating highlight balms designed to nourish while delivering natural color.',
+    published: true,
+  },
+  bodycare: {
+    id: 'bodycare',
+    title: 'Body & Bath Care Page',
+    subtitle: 'Indulgent Body Oils & Aromatic Cleansers',
+    heroImage: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1200&auto=format&fit=crop',
+    quote: 'Transform daily bathing into a serene sensory ritual.',
+    bodyText: 'Velvety body creams, intoxicating shower gels, and rich body oils scented with Madurai jasmine and lotus.',
+    published: true,
+  },
+  hampers: {
+    id: 'hampers',
+    title: 'Royal Hampers Gifting Page',
+    subtitle: 'Bespoke Curated Gift Boxes & Velvet Trunks',
+    heroImage: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1200&auto=format&fit=crop',
+    quote: 'Housed in handcrafted wooden chests sealed with traditional wax seals.',
+    bodyText: 'Exquisite gifting sets designed for weddings, anniversaries, corporate milestones, and cherished celebrations.',
+    published: true,
+  },
+  combos: {
+    id: 'combos',
+    title: 'Signature Combos Page',
+    subtitle: 'Layerable Perfume & Skincare Duos',
+    heroImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=1200&auto=format&fit=crop',
+    quote: 'Complementary perfume and body oil pairings for extended scent sillage.',
+    bodyText: 'Curated duos that harmonize fragrance and skincare to amplify scent longevity and skin radiance.',
+    published: true,
+  },
   philosophy: {
     id: 'philosophy',
     title: 'Our Philosophy',
@@ -206,12 +260,15 @@ function EditorialPagesContent() {
               <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
                 Hero Image URL
               </label>
-              <input
-                type="text"
-                value={currentPage.heroImage}
-                onChange={(e) => handleUpdateCurrentPage('heroImage', e.target.value)}
-                className="w-full bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-              />
+              <div className="flex gap-3 items-center">
+                <input
+                  type="text"
+                  value={currentPage.heroImage}
+                  onChange={(e) => handleUpdateCurrentPage('heroImage', e.target.value)}
+                  className="flex-1 bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
+                />
+                <img src={currentPage.heroImage} alt="Hero preview" className="w-16 h-12 object-cover border border-surface-container-high bg-stone-100" />
+              </div>
             </div>
 
             <div className="md:col-span-2">
@@ -277,7 +334,7 @@ function EditorialPagesContent() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] px-space-2xl py-3 hover:bg-tertiary-container transition-colors disabled:opacity-50"
+            className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] px-space-2xl py-3 hover:bg-tertiary-container transition-colors disabled:opacity-50 font-bold"
           >
             SAVE EDITORIAL PAGE
           </button>

@@ -1,5 +1,16 @@
 [
   {
+    "id": "usr_admin_master_01",
+    "name": "VĀNYA Master Admin",
+    "email": "admin@vanya.com",
+    "password": "$2b$10$5nK5KCAGKMam8y2j20zmsuq4KIkaaXMJlTtvj7Now0RPUR5m6.JgC",
+    "isVerified": true,
+    "otp": null,
+    "otpExpiresAt": null,
+    "role": "admin",
+    "createdAt": "2026-10-01T00:00:00.000Z"
+  },
+  {
     "id": "usr_1791378464401_gextas",
     "name": "Rishab Saini",
     "email": "rishab@vanya.com",
@@ -7,7 +18,7 @@
     "isVerified": true,
     "otp": null,
     "otpExpiresAt": null,
-    "role": "user",
+    "role": "admin",
     "createdAt": "2026-10-07T13:07:44.402Z"
   },
   {

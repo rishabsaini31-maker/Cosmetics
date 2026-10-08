@@ -1,0 +1,98 @@
+[
+  {
+    "id": "prod-01",
+    "name": "NOIR 01 Eau de Parfum",
+    "tagline": "Smoked Oudh, Wild Bergamot & Teak Resin",
+    "category": "Parfum Extrait",
+    "price": "₹6,800",
+    "numericPrice": 6800,
+    "badge": "Bestseller",
+    "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop",
+    "notes": [
+      "Wild Bergamot",
+      "Mysore Sandalwood",
+      "Dry Amber"
+    ],
+    "sillage": "Intense & Lingering",
+    "distillation": "Hydro-Steam",
+    "description": "Sensory formulations hand-crafted in small copper deg batches. Classical Kannauj hydro-distillation meets contemporary haute French perfumery.",
+    "sku": "VNY-SKU-1000",
+    "stock": 15,
+    "lowStockThreshold": 5,
+    "status": "Active",
+    "createdAt": "2026-10-08T09:32:23.918Z",
+    "updatedAt": "2026-10-08T09:32:23.918Z"
+  },
+  {
+    "id": "prod-02",
+    "name": "Saffron Lip Salve",
+    "tagline": "Kashmiri Mongra Saffron & Cold Almond Butter",
+    "category": "Skincare",
+    "price": "₹1,450",
+    "numericPrice": 1450,
+    "badge": "Harvest Special",
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
+    "notes": [
+      "Mongra Saffron",
+      "Organic Beeswax",
+      "Almond Butter"
+    ],
+    "sillage": "Nourishing Barrier",
+    "distillation": "Lipid Infusion",
+    "description": "Kashmiri mongra saffron strands slow-infused into organic beeswax and cold-pressed almond butter for deep repair.",
+    "sku": "VNY-SKU-1001",
+    "stock": 19,
+    "lowStockThreshold": 5,
+    "status": "Active",
+    "createdAt": "2026-10-08T09:32:23.918Z",
+    "updatedAt": "2026-10-08T09:32:23.918Z"
+  },
+  {
+    "id": "prod-03",
+    "name": "Madurai Jasmine Cream",
+    "tagline": "Night-Blooming Jasmine & Cold Lipid Nectar",
+    "category": "Skincare",
+    "price": "₹3,200",
+    "numericPrice": 3200,
+    "badge": "Limited Batch",
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+    "notes": [
+      "Madurai Jasmine",
+      "Lipid Complex",
+      "Vetiver Extract"
+    ],
+    "sillage": "Velvet Softness",
+    "distillation": "Enfleurage",
+    "description": "Night-blooming Madurai jasmine infused into cold lipid emulsions to soothe, hydrate, and nurture skin radiance.",
+    "sku": "VNY-SKU-1002",
+    "stock": 23,
+    "lowStockThreshold": 5,
+    "status": "Active",
+    "createdAt": "2026-10-08T09:32:23.918Z",
+    "updatedAt": "2026-10-08T09:32:23.918Z"
+  },
+  {
+    "id": "prod-04",
+    "name": "Kannauj Clay Mist",
+    "tagline": "Clay Steam Distillate & Morning Rose Water",
+    "category": "Botanical Mist",
+    "price": "₹2,100",
+    "numericPrice": 2100,
+    "badge": "Pure Hydrophile",
+    "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=800&auto=format&fit=crop",
+    "notes": [
+      "Bhakti Clay",
+      "Kannauj Rose",
+      "Spring Water"
+    ],
+    "sillage": "Fresh & Dewy",
+    "distillation": "Hydro-Distillation",
+    "description": "Petrichor essence distilled from sun-baked Kannauj clay and morning damascena roses.",
+    "sku": "VNY-SKU-1003",
+    "stock": 27,
+    "lowStockThreshold": 5,
+    "status": "Active",
+    "createdAt": "2026-10-08T09:32:23.918Z",
+    "updatedAt": "2026-10-08T09:32:23.918Z"
+  }
+]
