@@ -317,15 +317,18 @@ export default function Header() {
               )}
             </Link>
 
-            {/* CART Icon & Counter */}
+            {/* CART Icon */}
             <Link
               href="/cart"
-              className="flex items-center gap-space-xs font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant hover:text-on-surface transition-colors p-1"
+              aria-label="Cart"
+              className="relative text-on-surface-variant hover:text-on-surface transition-colors p-1 flex items-center"
             >
               <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
-              <span className="hidden sm:inline font-bold">
-                CART {itemCount > 0 ? `(${itemCount})` : ''}
-              </span>
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary text-on-secondary font-label-caps text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {itemCount}
+                </span>
+              )}
             </Link>
 
             {/* User Auth Section — Placed strictly on the RIGHT side of Cart */}
