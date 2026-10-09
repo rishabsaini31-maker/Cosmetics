@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
 import { fetchAdminContent, updateAdminContent } from '@/services/adminApi';
+import ImageUploadInput from '@/components/ImageUploadInput';
 
 function CollectionsEditorContent() {
   const { showToast } = useAdmin();
@@ -60,7 +61,7 @@ function CollectionsEditorContent() {
 
           <div className="space-y-space-md">
             {collections.map((col, idx) => (
-              <div key={idx} className="p-space-md bg-surface-container-low border border-surface-container-high space-y-3">
+              <div key={idx} className="p-space-md bg-surface-container-low border border-surface-container-high space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
                     <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">Collection Title</label>
@@ -104,6 +105,17 @@ function CollectionsEditorContent() {
                     />
                   </div>
                 </div>
+
+                <ImageUploadInput
+                  label="Collection Banner Image"
+                  value={col.image || ''}
+                  onChange={(url) => {
+                    const copy = [...collections];
+                    copy[idx].image = url;
+                    setCollections(copy);
+                  }}
+                  placeholder="Paste collection image URL or click Upload Image..."
+                />
               </div>
             ))}
           </div>

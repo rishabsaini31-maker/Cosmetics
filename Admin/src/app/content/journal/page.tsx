@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
 import { fetchAdminContent, updateAdminContent } from '@/services/adminApi';
+import ImageUploadInput from '@/components/ImageUploadInput';
 
 interface JournalArticle {
   id: string;
@@ -308,14 +309,11 @@ function JournalManagerContent() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
-                      Cover Image URL
-                    </label>
-                    <input
-                      type="text"
-                      value={editingArticle.coverImage}
-                      onChange={(e) => setEditingArticle({ ...editingArticle, coverImage: e.target.value })}
-                      className="w-full bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
+                    <ImageUploadInput
+                      label="Cover Image"
+                      value={editingArticle.coverImage || ''}
+                      onChange={(url) => setEditingArticle({ ...editingArticle, coverImage: url })}
+                      placeholder="Paste cover image URL or click Upload Image..."
                     />
                   </div>
 

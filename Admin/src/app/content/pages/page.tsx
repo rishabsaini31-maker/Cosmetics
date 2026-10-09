@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
+import ImageUploadInput from '@/components/ImageUploadInput';
 import { fetchAdminContent, updateAdminContent } from '@/services/adminApi';
 
 interface EditorialPageConfig {
@@ -256,14 +257,11 @@ function EditorialPagesContent() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
-                Hero Image URL
-              </label>
-              <input
-                type="text"
+              <ImageUploadInput
+                label="Hero Banner Image"
                 value={currentPage.heroImage}
-                onChange={(e) => handleUpdateCurrentPage('heroImage', e.target.value)}
-                className="w-full bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
+                onChange={(url) => handleUpdateCurrentPage('heroImage', url)}
+                placeholder="Paste Hero image URL or click Upload Image..."
               />
             </div>
 

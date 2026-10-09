@@ -7,6 +7,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
 import { fetchAdminProducts, createAdminProduct, updateAdminProduct } from '@/services/adminApi';
+import ImageUploadInput from '@/components/ImageUploadInput';
 
 function ProductEditorContent() {
   const params = useParams();
@@ -296,22 +297,16 @@ function ProductEditorContent() {
 
         {/* Section 3: Media & Olfactory Notes */}
         <div className="bg-surface-container-lowest p-space-xl border border-surface-container-high space-y-space-md">
-          <h2 className="font-display text-1xl text-primary font-medium border-b border-surface-container-high pb-2">
+          <h2 className="font-display text-xl text-primary font-medium border-b border-surface-container-high pb-2">
             3. Media & Olfactory Structure
           </h2>
 
-          <div>
-            <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
-              Primary Image URL *
-            </label>
-            <input
-              type="url"
-              required
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              className="w-full bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-on-surface focus:outline-none focus:border-primary"
-            />
-          </div>
+          <ImageUploadInput
+            label="Primary Product Image"
+            value={formData.image}
+            onChange={(url) => setFormData({ ...formData, image: url })}
+            placeholder="Paste product image URL or click Upload Image..."
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
             <div>

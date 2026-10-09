@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
 import { fetchAdminProducts, updateAdminProduct, deleteAdminProduct } from '@/services/adminApi';
+import ImageUploadInput from '@/components/ImageUploadInput';
 
 function ProductEditContent() {
   const params = useParams();
@@ -189,15 +190,12 @@ function ProductEditContent() {
           </h2>
 
           <div className="space-y-space-md">
-            <div>
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">Image URL</label>
-              <input
-                type="text"
-                value={product.image}
-                onChange={(e) => setProduct({ ...product, image: e.target.value })}
-                className="w-full bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-              />
-            </div>
+            <ImageUploadInput
+              label="Product Image"
+              value={product.image || ''}
+              onChange={(url) => setProduct({ ...product, image: url })}
+              placeholder="Paste image URL or click Upload Image..."
+            />
 
             <div>
               <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">Description</label>

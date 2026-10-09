@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
 import AdminLayout from '@/components/AdminLayout';
+import ImageUploadInput from '@/components/ImageUploadInput';
 import { fetchAdminContent, updateAdminContent } from '@/services/adminApi';
 
 function HomepageEditorContent() {
@@ -108,7 +109,7 @@ function HomepageEditorContent() {
             Homepage Text & Image CMS
           </h1>
           <p className="font-body text-xs text-secondary mt-1">
-            Edit headlines, paragraphs, and banner image assets for the live storefront.
+            Edit headlines, paragraphs, and upload banner image assets for the live storefront.
           </p>
         </div>
       </div>
@@ -173,18 +174,14 @@ function HomepageEditorContent() {
               />
             </div>
 
-            {/* HERO IMAGE URL & PREVIEW */}
-            <div className="md:col-span-2 space-y-2 pt-2 border-t border-surface-container-high">
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block">Hero Background Image URL</label>
-              <div className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  value={hero.heroImage}
-                  onChange={(e) => setHero({ ...hero, heroImage: e.target.value })}
-                  className="flex-1 bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-                />
-                <img src={hero.heroImage} alt="Hero preview" className="w-16 h-12 object-cover border border-surface-container-high bg-stone-100" />
-              </div>
+            {/* HERO IMAGE UPLOAD */}
+            <div className="md:col-span-2 pt-2 border-t border-surface-container-high">
+              <ImageUploadInput
+                label="Hero Background Image"
+                value={hero.heroImage}
+                onChange={(url) => setHero({ ...hero, heroImage: url })}
+                placeholder="Paste Hero image URL or upload image..."
+              />
             </div>
           </div>
         </div>
@@ -226,17 +223,13 @@ function HomepageEditorContent() {
               />
             </div>
 
-            <div className="md:col-span-2 space-y-2 pt-2 border-t border-surface-container-high">
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block">Fragrance Showcase Image URL</label>
-              <div className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  value={fragranceSection.bannerImage}
-                  onChange={(e) => setFragranceSection({ ...fragranceSection, bannerImage: e.target.value })}
-                  className="flex-1 bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-                />
-                <img src={fragranceSection.bannerImage} alt="Fragrance preview" className="w-16 h-12 object-cover border border-surface-container-high bg-stone-100" />
-              </div>
+            <div className="md:col-span-2 pt-2 border-t border-surface-container-high">
+              <ImageUploadInput
+                label="Fragrance Showcase Banner Image"
+                value={fragranceSection.bannerImage}
+                onChange={(url) => setFragranceSection({ ...fragranceSection, bannerImage: url })}
+                placeholder="Paste Fragrance section image URL or upload image..."
+              />
             </div>
           </div>
         </div>
@@ -278,17 +271,13 @@ function HomepageEditorContent() {
               />
             </div>
 
-            <div className="md:col-span-2 space-y-2 pt-2 border-t border-surface-container-high">
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block">Beauty Section Banner Image URL</label>
-              <div className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  value={beautySection.bannerImage}
-                  onChange={(e) => setBeautySection({ ...beautySection, bannerImage: e.target.value })}
-                  className="flex-1 bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-                />
-                <img src={beautySection.bannerImage} alt="Beauty preview" className="w-16 h-12 object-cover border border-surface-container-high bg-stone-100" />
-              </div>
+            <div className="md:col-span-2 pt-2 border-t border-surface-container-high">
+              <ImageUploadInput
+                label="Beauty Section Banner Image"
+                value={beautySection.bannerImage}
+                onChange={(url) => setBeautySection({ ...beautySection, bannerImage: url })}
+                placeholder="Paste Beauty section image URL or upload image..."
+              />
             </div>
           </div>
         </div>
@@ -330,17 +319,13 @@ function HomepageEditorContent() {
               />
             </div>
 
-            <div className="md:col-span-2 space-y-2 pt-2 border-t border-surface-container-high">
-              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block">Editorial Background Image URL</label>
-              <div className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  value={editorialBanner.bgImage}
-                  onChange={(e) => setEditorialBanner({ ...editorialBanner, bgImage: e.target.value })}
-                  className="flex-1 bg-surface-container-low border border-surface-container-high px-3 py-2 font-mono text-xs text-primary focus:outline-none"
-                />
-                <img src={editorialBanner.bgImage} alt="Editorial preview" className="w-16 h-12 object-cover border border-surface-container-high bg-stone-100" />
-              </div>
+            <div className="md:col-span-2 pt-2 border-t border-surface-container-high">
+              <ImageUploadInput
+                label="Editorial Background Image"
+                value={editorialBanner.bgImage}
+                onChange={(url) => setEditorialBanner({ ...editorialBanner, bgImage: url })}
+                placeholder="Paste Editorial background image URL or upload image..."
+              />
             </div>
           </div>
         </div>
@@ -350,9 +335,9 @@ function HomepageEditorContent() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] px-space-2xl py-3 hover:bg-tertiary-container transition-colors disabled:opacity-50 font-bold"
+            className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] px-space-2xl py-3 hover:bg-tertiary-container transition-colors disabled:opacity-50 font-bold flex items-center gap-2"
           >
-            SAVE ALL HOMEPAGE TEXT & IMAGES
+            <span className="material-symbols-outlined text-base">save</span> SAVE ALL HOMEPAGE TEXT & IMAGES
           </button>
         </div>
       </form>
