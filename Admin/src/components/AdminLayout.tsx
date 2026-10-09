@@ -1,28 +1,189 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAdmin } from '@/context/AdminContext';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const {
     sidebarCollapsed,
     toggleSidebar,
     globalSearch,
     setGlobalSearch,
+    showToast,
   } = useAdmin();
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [adminUser, setAdminUser] = useState<{ name: string; email: string; role: string } | null>(null);
 
-  // Static Master Admin User (NO LOGIN REQUIRED)
-  const user = {
-    name: 'VĀNYA Admin',
-    email: 'admin@vanya.com',
-    role: 'admin',
+  // Login form state for inline login guard
+  const [loginEmail, setLoginEmail] = useState('admin@vanya.com');
+  const [loginPassword, setLoginPassword] = useState('admin123');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+
+  useEffect(() => {
+    const token = localStorage.getItem('vanya_auth_token');
+    const savedUser = localStorage.getItem('vanya_admin_user');
+
+    if (token) {
+      setIsAuthenticated(true);
+      if (savedUser) {
+        try {
+          setAdminUser(JSON.parse(savedUser));
+        } catch {
+          setAdminUser({ name: 'Master Administrator', email: 'admin@vanya.com', role: 'admin' });
+        }
+      } else {
+        setAdminUser({ name: 'Master Administrator', email: 'admin@vanya.com', role: 'admin' });
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+  const handleInlineLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    setLoginError('');
+
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginEmail.trim(), password: loginPassword }),
+      });
+
+      const data = await res.json();
+      setLoginLoading(false);
+
+      if (data.success && data.token) {
+        localStorage.setItem('vanya_auth_token', data.token);
+        const u = data.user || { name: 'Master Administrator', email: loginEmail.trim(), role: 'admin' };
+        localStorage.setItem('vanya_admin_user', JSON.stringify(u));
+        setAdminUser(u);
+        setIsAuthenticated(true);
+        showToast(`Welcome back, ${u.name}!`, 'success');
+      } else {
+        setLoginError(data.message || 'Invalid administrator credentials.');
+      }
+    } catch (err) {
+      setLoginLoading(false);
+      setLoginError('Server authentication error. Ensure backend API is active.');
+    }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('vanya_auth_token');
+    localStorage.removeItem('vanya_admin_user');
+    setIsAuthenticated(false);
+    setAdminUser(null);
+    setAdminMenuOpen(false);
+    showToast('Signed out of Admin Operations Hub.', 'info');
+  };
+
+  // Loading state while checking token
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center font-label-caps text-xs uppercase tracking-widest text-secondary animate-pulse">
+        Authenticating Admin Credentials...
+      </div>
+    );
+  }
+
+  // Unauthenticated Admin Login Screen Guard
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-margin lg:p-margin-desktop font-body antialiased relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md bg-surface-container-lowest border border-surface-container-high shadow-2xl p-space-2xl z-10 relative">
+          <div className="text-center space-y-2 mb-space-xl border-b border-surface-container-high pb-space-lg">
+            <span className="font-label-caps text-xs uppercase tracking-[0.3em] text-secondary font-bold block">
+              RESTRICTED ACCESS PORTAL
+            </span>
+            <h1 className="font-display text-4xl text-primary uppercase tracking-[0.2em] font-medium">
+              VĀNYA
+            </h1>
+            <p className="font-label-caps text-[0.6875rem] uppercase tracking-[0.2em] text-on-surface-variant">
+              Haute Parfumerie Admin Command Center
+            </p>
+          </div>
+
+          {loginError && (
+            <div className="mb-space-md p-3 bg-red-900/10 border border-red-500/30 text-red-700 font-body text-xs text-center animate-in fade-in">
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleInlineLogin} className="space-y-space-lg">
+            <div>
+              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1.5">
+                Administrator Email *
+              </label>
+              <input
+                type="email"
+                required
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="admin@vanya.com"
+                className="w-full bg-surface-container-low border border-surface-container-high px-4 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1.5">
+                Master Password *
+              </label>
+              <input
+                type="password"
+                required
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full bg-surface-container-low border border-surface-container-high px-4 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            <div className="bg-surface-container-low border border-surface-container-high p-3 flex items-center justify-between text-xs">
+              <div>
+                <span className="font-label-caps text-[0.625rem] text-secondary uppercase font-bold block">Demo Credentials</span>
+                <span className="font-mono text-[0.6875rem] text-on-surface-variant">admin@vanya.com / admin123</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginEmail('admin@vanya.com');
+                  setLoginPassword('admin123');
+                  setLoginError('');
+                }}
+                className="font-label-caps text-[0.625rem] uppercase tracking-wider bg-surface-container-highest border border-surface-container-high px-2.5 py-1 text-primary hover:border-primary transition-colors"
+              >
+                Quick Fill
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] font-bold py-3.5 hover:bg-tertiary-container transition-all disabled:opacity-50 shadow-md"
+            >
+              {loginLoading ? 'AUTHENTICATING...' : 'ENTER COMMAND CENTER →'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  const user = adminUser || { name: 'Master Administrator', email: 'admin@vanya.com', role: 'admin' };
 
   const navGroups = [
     {
@@ -258,6 +419,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link href="/users" onClick={() => setAdminMenuOpen(false)} className="block py-1.5 font-label-caps text-xs uppercase tracking-wider text-on-surface-variant hover:text-primary">
                     User Roles
                   </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full text-left py-2 mt-2 border-t border-surface-container-high font-label-caps text-xs uppercase tracking-wider text-error hover:underline flex items-center justify-between"
+                  >
+                    <span>Sign Out Admin</span>
+                    <span>→</span>
+                  </button>
                 </div>
               )}
             </div>

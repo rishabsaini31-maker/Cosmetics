@@ -10,7 +10,7 @@ import { PRODUCTS } from '@/data/products';
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { itemCount, wishlist, openCart } = useCart();
+  const { itemCount, wishlist } = useCart();
   const { user, logout, openAuthModal } = useAuth();
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -181,7 +181,7 @@ export default function Header() {
               )}
             </div>
 
-            {/* HAMPERS Nav Item (Double-column minimal dropdown) */}
+            {/* HAMPERS Nav Item */}
             <div
               className="relative py-6"
               onMouseEnter={() => setActiveDropdown('hampers')}
@@ -197,7 +197,6 @@ export default function Header() {
               </Link>
               {activeDropdown === 'hampers' && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-[420px] bg-surface-container-lowest border border-surface-container-high shadow-2xl p-space-lg grid grid-cols-2 gap-space-lg z-50 animate-in fade-in duration-150">
-                  {/* HAMPERS Column */}
                   <div>
                     <span className="font-label-caps text-xs font-bold uppercase tracking-[0.2em] text-primary block pb-2 mb-2 border-b border-surface-container-high">
                       HAMPERS
@@ -224,7 +223,6 @@ export default function Header() {
                     </div>
                   </div>
 
-                  {/* COMBOS Column */}
                   <div>
                     <span className="font-label-caps text-xs font-bold uppercase tracking-[0.2em] text-primary block pb-2 mb-2 border-b border-surface-container-high">
                       COMBOS
@@ -293,8 +291,8 @@ export default function Header() {
             </div>
           </nav>
 
-          {/* Right Side Actions: SEARCH | ♡ | PROFILE | CART */}
-          <div className="flex items-center gap-space-md sm:gap-space-lg">
+          {/* Right Side Actions: SEARCH | WISHLIST | CART | [PROFILE ICON / LOGIN & SIGN UP (ON RIGHT SIDE OF CART)] */}
+          <div className="flex items-center gap-space-sm sm:gap-space-md">
             {/* Search Icon */}
             <button
               type="button"
@@ -319,79 +317,7 @@ export default function Header() {
               )}
             </Link>
 
-            {/* Profile Icon & Menu */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  if (user) {
-                    setProfileOpen(!profileOpen);
-                  } else {
-                    openAuthModal('login');
-                  }
-                }}
-                aria-label="Account Profile"
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors relative ${
-                  profileOpen || pathname === '/account'
-                    ? 'bg-secondary text-on-secondary'
-                    : 'bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[18px]">person</span>
-                {user && (
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-surface rounded-full" />
-                )}
-              </button>
-
-              {/* Profile Dropdown Menu */}
-              {profileOpen && user && (
-                <div
-                  className="absolute top-full right-0 mt-3 w-64 bg-surface-container-lowest border border-surface-container-high shadow-2xl p-space-md z-50 animate-in fade-in duration-150"
-                  onMouseLeave={() => setProfileOpen(false)}
-                >
-                  <div className="flex flex-col gap-1 font-body text-xs text-on-surface-variant">
-                    <div className="pb-2 mb-2 border-b border-surface-container-high">
-                      <span className="font-display text-sm text-primary font-semibold block">{user.name}</span>
-                      <span className="text-[0.6875rem] text-on-surface-variant block font-mono">{user.email}</span>
-                      <span className="inline-block mt-1 text-[0.625rem] text-secondary font-label-caps uppercase tracking-wider bg-surface-container px-2 py-0.5 border border-surface-container-high">
-                        Verified Patron Passport
-                      </span>
-                    </div>
-
-                    <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                      <span>Account Passport</span>
-                    </Link>
-                    <Link href="/admin" onClick={() => setProfileOpen(false)} className="py-1.5 text-secondary font-label-caps uppercase tracking-wider font-bold hover:text-primary transition-colors flex items-center justify-between border-y border-surface-container-high my-1 py-2">
-                      <span>⚡ Admin Operations Hub</span>
-                      <span>→</span>
-                    </Link>
-                    <Link href="/track-order" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                      <span>Order Tracking</span>
-                    </Link>
-                    <Link href="/wishlist" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                      <span>Saved Flacons ({wishlist.length})</span>
-                    </Link>
-                    <Link href="/customer-care" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
-                      <span>Customer Care</span>
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logout();
-                        setProfileOpen(false);
-                      }}
-                      className="py-2 mt-2 border-t border-surface-container-high text-left font-label-caps text-xs uppercase tracking-wider text-error hover:underline flex items-center justify-between"
-                    >
-                      <span>Sign Out</span>
-                      <span>→</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* CART (Navigates to /cart or opens drawer) */}
+            {/* CART Icon & Counter */}
             <Link
               href="/cart"
               className="flex items-center gap-space-xs font-label-caps text-label-caps tracking-widest uppercase text-on-surface-variant hover:text-on-surface transition-colors p-1"
@@ -402,12 +328,99 @@ export default function Header() {
               </span>
             </Link>
 
+            {/* User Auth Section — Placed strictly on the RIGHT side of Cart */}
+            {user ? (
+              /* Profile Icon & Menu (Logged In) */
+              <div className="relative pl-1">
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  aria-label="Account Profile"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors relative ${
+                    profileOpen || pathname === '/account'
+                      ? 'bg-secondary text-on-secondary'
+                      : 'bg-surface-container-high text-on-surface hover:bg-primary hover:text-on-primary'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">person</span>
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-surface rounded-full" />
+                </button>
+
+                {/* Profile Dropdown Menu */}
+                {profileOpen && (
+                  <div
+                    className="absolute top-full right-0 mt-3 w-64 bg-surface-container-lowest border border-surface-container-high shadow-2xl p-space-md z-50 animate-in fade-in duration-150"
+                    onMouseLeave={() => setProfileOpen(false)}
+                  >
+                    <div className="flex flex-col gap-1 font-body text-xs text-on-surface-variant">
+                      <div className="pb-2 mb-2 border-b border-surface-container-high">
+                        <span className="font-display text-sm text-primary font-semibold block">{user.name}</span>
+                        <span className="text-[0.6875rem] text-on-surface-variant block font-mono">{user.email}</span>
+                        <span className="inline-block mt-1 text-[0.625rem] text-secondary font-label-caps uppercase tracking-wider bg-surface-container px-2 py-0.5 border border-surface-container-high">
+                          Verified Patron Passport
+                        </span>
+                      </div>
+
+                      <Link href="/account" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                        <span>Account Passport</span>
+                      </Link>
+                      {(user.role === 'admin' || user.email === 'admin@vanya.com') && (
+                        <Link href="/admin" onClick={() => setProfileOpen(false)} className="py-1.5 text-secondary font-label-caps uppercase tracking-wider font-bold hover:text-primary transition-colors flex items-center justify-between border-y border-surface-container-high my-1 py-2">
+                          <span>⚡ Admin Operations Hub</span>
+                          <span>→</span>
+                        </Link>
+                      )}
+                      <Link href="/track-order" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                        <span>Order Tracking</span>
+                      </Link>
+                      <Link href="/wishlist" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                        <span>Saved Flacons ({wishlist.length})</span>
+                      </Link>
+                      <Link href="/customer-care" onClick={() => setProfileOpen(false)} className="py-1.5 hover:text-primary transition-colors flex justify-between">
+                        <span>Customer Care</span>
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          logout();
+                          setProfileOpen(false);
+                        }}
+                        className="py-2 mt-2 border-t border-surface-container-high text-left font-label-caps text-xs uppercase tracking-wider text-error hover:underline flex items-center justify-between"
+                      >
+                        <span>Sign Out</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* LOGIN & SIGN UP Buttons (Logged Out) */
+              <div className="flex items-center gap-2 pl-1.5 sm:pl-2 border-l border-surface-container-high">
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('login')}
+                  className="font-label-caps text-[0.6875rem] uppercase tracking-[0.18em] font-semibold text-primary hover:text-secondary px-2.5 sm:px-3 py-1.5 border border-surface-container-high hover:border-primary transition-all whitespace-nowrap"
+                >
+                  LOGIN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openAuthModal('signup')}
+                  className="font-label-caps text-[0.6875rem] uppercase tracking-[0.18em] font-bold bg-primary text-on-primary hover:bg-tertiary-container transition-all px-3 sm:px-3.5 py-1.5 shadow-sm whitespace-nowrap"
+                >
+                  SIGN UP
+                </button>
+              </div>
+            )}
+
             {/* Mobile Menu Toggle Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
-              className="lg:hidden p-1 text-on-surface flex items-center"
+              className="lg:hidden p-1 text-on-surface flex items-center ml-1"
             >
               <span className="material-symbols-outlined text-[24px]">
                 {mobileMenuOpen ? 'close' : 'menu'}
@@ -461,24 +474,49 @@ export default function Header() {
                 <span className="material-symbols-outlined text-sm text-outline">chevron_right</span>
               </Link>
 
-              <div className="flex items-center justify-between pt-3 text-secondary text-xs">
-                <Link
-                  href="/account"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-1"
-                >
-                  <span className="material-symbols-outlined text-base">person</span>
-                  <span>PROFILE</span>
-                </Link>
-                <Link
-                  href="/wishlist"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-1"
-                >
-                  <span className="material-symbols-outlined text-base">favorite</span>
-                  <span>WISHLIST ({wishlist.length})</span>
-                </Link>
-              </div>
+              {user ? (
+                <div className="flex items-center justify-between pt-3 text-secondary text-xs">
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-1 font-bold"
+                  >
+                    <span className="material-symbols-outlined text-base">person</span>
+                    <span>PROFILE ({user.name.split(' ')[0]})</span>
+                  </Link>
+                  <Link
+                    href="/wishlist"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-base">favorite</span>
+                    <span>WISHLIST ({wishlist.length})</span>
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openAuthModal('login');
+                    }}
+                    className="flex-1 font-label-caps text-xs uppercase tracking-wider py-2.5 border border-surface-container-high text-primary font-semibold text-center"
+                  >
+                    LOGIN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openAuthModal('signup');
+                    }}
+                    className="flex-1 font-label-caps text-xs uppercase tracking-wider py-2.5 bg-primary text-on-primary font-bold text-center"
+                  >
+                    SIGN UP
+                  </button>
+                </div>
+              )}
             </nav>
           </div>
         )}
