@@ -4,24 +4,51 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useAdmin, DateRangeOption } from '@/context/AdminContext';
+import { useAdmin } from '@/context/AdminContext';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, openAuthModal, logout } = useAuth();
+  const { user, loginUser, logout } = useAuth();
   const {
     sidebarCollapsed,
     toggleSidebar,
     globalSearch,
     setGlobalSearch,
+    showToast,
   } = useAdmin();
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
-  // Auto grant/prompt admin login if not signed in or not admin
+  // Admin Login form states
+  const [loginEmail, setLoginEmail] = useState('admin@vanya.com');
+  const [loginPassword, setLoginPassword] = useState('admin123');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  // Check if current user is an authenticated Admin
   const isAdmin = user && (user.role === 'admin' || user.email === 'admin@vanya.com');
+
+  const handleAdminLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+    setLoading(true);
+
+    const res = await loginUser(loginEmail.trim(), loginPassword);
+    setLoading(false);
+
+    if (res.success && res.user) {
+      if (res.user.role === 'admin' || res.user.email === 'admin@vanya.com') {
+        showToast(`Welcome back, ${res.user.name}!`, 'success');
+      } else {
+        setErrorMsg('Access denied. Administrator privileges are required.');
+      }
+    } else if (!res.requiresOtp) {
+      setErrorMsg(res.message || 'Invalid administrator credentials.');
+    }
+  };
 
   const navGroups = [
     {
@@ -85,31 +112,112 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     },
   ];
 
+  // Restricted Area: Strictly Administrator Login ONLY
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
-        <div className="bg-surface-container-lowest p-8 border border-surface-container-high max-w-md w-full text-center shadow-lg">
-          <span className="font-label-caps text-xs uppercase tracking-[0.25em] text-secondary font-bold block mb-2">
-            RESTRICTED AREA
-          </span>
-          <h1 className="font-display text-3xl text-primary font-medium mb-3">
-            VĀNYA Admin Operations
-          </h1>
-          <p className="font-editorial-serif text-sm text-on-surface-variant leading-relaxed mb-6">
-            Administrator privileges are required to access store command tools. Please sign in with an admin account (e.g. <code className="bg-surface-container px-1 py-0.5 text-primary">admin@vanya.com</code> / <code className="bg-surface-container px-1 py-0.5 text-primary">admin123</code>).
-          </p>
-          <div className="flex flex-col gap-3">
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-margin lg:p-margin-desktop font-body antialiased relative overflow-hidden">
+        
+        {/* Background Decorative Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md bg-surface-container-lowest p-space-2xl border border-surface-container-high shadow-2xl z-10 relative">
+          
+          {/* Header */}
+          <div className="text-center space-y-2 mb-space-xl border-b border-surface-container-high pb-space-lg">
+            <span className="font-label-caps text-xs uppercase tracking-[0.3em] text-secondary font-bold block">
+              RESTRICTED ACCESS PORTAL
+            </span>
+            <h1 className="font-display text-4xl text-primary uppercase tracking-[0.2em] font-medium">
+              VĀNYA
+            </h1>
+            <p className="font-label-caps text-[0.6875rem] uppercase tracking-[0.2em] text-on-surface-variant">
+              Haute Parfumerie Admin Operations Hub
+            </p>
+          </div>
+
+          {/* Error Banner */}
+          {errorMsg && (
+            <div className="mb-space-md p-3 bg-red-900/10 border border-red-500/30 text-red-700 font-body text-xs text-center animate-in fade-in">
+              {errorMsg}
+            </div>
+          )}
+
+          {/* Admin Login Only Form */}
+          <form onSubmit={handleAdminLoginSubmit} className="space-y-space-lg">
+            <div>
+              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1.5">
+                Administrator Email *
+              </label>
+              <input
+                type="email"
+                required
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="admin@vanya.com"
+                className="w-full bg-surface-container-low border border-surface-container-high px-4 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1.5">
+                Master Password *
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-surface-container-low border border-surface-container-high pl-4 pr-10 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Demo Credentials Assistant */}
+            <div className="bg-surface-container-low border border-surface-container-high p-3 flex items-center justify-between text-xs">
+              <div>
+                <span className="font-label-caps text-[0.625rem] text-secondary uppercase font-bold block">Demo Credentials</span>
+                <span className="font-mono text-[0.6875rem] text-on-surface-variant">admin@vanya.com / admin123</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginEmail('admin@vanya.com');
+                  setLoginPassword('admin123');
+                  setErrorMsg('');
+                }}
+                className="font-label-caps text-[0.625rem] uppercase tracking-wider bg-surface-container-highest border border-surface-container-high px-2.5 py-1 text-primary hover:border-primary transition-colors"
+              >
+                Quick Fill
+              </button>
+            </div>
+
             <button
-              onClick={() => openAuthModal('login', 'admin@vanya.com')}
-              className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] py-3 hover:bg-tertiary-container transition-colors"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] font-bold py-3.5 hover:bg-tertiary-container transition-all disabled:opacity-50 shadow-md"
             >
-              SIGN IN AS ADMIN
+              {loading ? 'AUTHENTICATING SESSION...' : 'ENTER OPERATIONS HUB →'}
             </button>
+          </form>
+
+          <div className="mt-space-lg pt-space-md border-t border-surface-container-high text-center">
             <Link
               href="/"
-              className="font-label-caps text-xs uppercase tracking-[0.18em] text-on-surface-variant hover:text-primary pt-2"
+              className="font-label-caps text-xs uppercase tracking-wider text-on-surface-variant hover:text-primary transition-colors"
             >
-              ← Return to Public Storefront
+              ← Return to Public E-Commerce Storefront
             </Link>
           </div>
         </div>
@@ -298,9 +406,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       setAdminMenuOpen(false);
                       router.push('/');
                     }}
-                    className="w-full text-left py-2 mt-2 border-t border-surface-container-high font-label-caps text-xs uppercase tracking-wider text-error hover:underline"
+                    className="w-full text-left py-2 mt-2 border-t border-surface-container-high font-label-caps text-xs uppercase tracking-wider text-error hover:underline flex items-center justify-between"
                   >
-                    Sign Out Admin
+                    <span>Sign Out Admin</span>
+                    <span>→</span>
                   </button>
                 </div>
               )}
