@@ -23,8 +23,13 @@ export default function AuthModal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
+
+  // Visibility toggles
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Status & feedback
   const [loading, setLoading] = useState(false);
@@ -70,6 +75,12 @@ export default function AuthModal() {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
+
+    if (password !== confirmPassword) {
+      setErrorMsg('Passwords do not match. Please ensure both password fields are identical.');
+      return;
+    }
+
     setLoading(true);
 
     const res = await signupUser(name, email, password);
@@ -147,7 +158,7 @@ export default function AuthModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-primary/70 backdrop-blur-md transition-opacity">
-      <div className="bg-surface p-space-xl lg:p-space-2xl border border-surface-container-high max-w-md w-full relative shadow-2xl overflow-hidden">
+      <div className="bg-surface p-space-xl lg:p-space-2xl border border-surface-container-high max-w-md w-full relative shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto no-scrollbar">
         
         {/* Close Button */}
         <button
@@ -255,14 +266,26 @@ export default function AuthModal() {
                   Forgot?
                 </button>
               </div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-surface-container-lowest border border-surface-container-high px-3 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-surface-container-lowest border border-surface-container-high pl-3 pr-10 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <button
@@ -306,24 +329,74 @@ export default function AuthModal() {
               />
             </div>
 
+            {/* Password Field 1 with Show/Hide toggle */}
             <div>
               <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
                 Password
               </label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                className="w-full bg-surface-container-lowest border border-surface-container-high px-3 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  className="w-full bg-surface-container-lowest border border-surface-container-high pl-3 pr-10 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password Field 2 with Show/Hide toggle */}
+            <div>
+              <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter your password"
+                  className={`w-full bg-surface-container-lowest border pl-3 pr-10 py-2.5 font-body text-xs text-on-surface focus:outline-none ${
+                    confirmPassword && confirmPassword !== password
+                      ? 'border-error focus:border-error'
+                      : 'border-surface-container-high focus:border-primary'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showConfirmPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
+              {confirmPassword && confirmPassword !== password && (
+                <span className="font-body text-[0.6875rem] text-error mt-1 block font-semibold">
+                  Passwords do not match.
+                </span>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (!!confirmPassword && password !== confirmPassword)}
               className="w-full bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] py-3 hover:bg-tertiary-container transition-colors disabled:opacity-50 mt-2"
             >
               {loading ? 'CREATING ACCOUNT...' : 'REGISTER & RECEIVE OTP'}
@@ -465,15 +538,27 @@ export default function AuthModal() {
               <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1">
                 New Password
               </label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                className="w-full bg-surface-container-lowest border border-surface-container-high px-3 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  className="w-full bg-surface-container-lowest border border-surface-container-high pl-3 pr-10 py-2.5 font-body text-xs text-on-surface focus:outline-none focus:border-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <button

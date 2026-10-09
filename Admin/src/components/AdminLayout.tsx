@@ -24,6 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Login form state for inline login guard
   const [loginEmail, setLoginEmail] = useState('admin@vanya.com');
   const [loginPassword, setLoginPassword] = useState('admin123');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -142,14 +143,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <label className="font-label-caps text-[0.6875rem] uppercase tracking-wider text-primary font-semibold block mb-1.5">
                 Master Password *
               </label>
-              <input
-                type="password"
-                required
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full bg-surface-container-low border border-surface-container-high px-4 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type={showLoginPassword ? 'text' : 'password'}
+                  required
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-surface-container-low border border-surface-container-high pl-4 pr-10 py-3 font-mono text-xs text-primary focus:outline-none focus:border-primary transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowLoginPassword(!showLoginPassword)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary p-1"
+                  aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {showLoginPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <div className="bg-surface-container-low border border-surface-container-high p-3 flex items-center justify-between text-xs">
