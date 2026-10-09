@@ -21,7 +21,7 @@ export default function ProductDetailPage() {
   const isFav = isInWishlist(product.id);
 
   return (
-    <main className="w-full bg-surface min-h-screen py-space-2xl">
+    <main className="w-full bg-surface min-h-screen py-space-2xl pb-24 lg:pb-space-2xl">
       <div className="max-w-7xl mx-auto px-margin lg:px-margin-desktop">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 font-label-caps text-xs text-on-surface-variant uppercase tracking-wider mb-space-lg">
@@ -37,7 +37,7 @@ export default function ProductDetailPage() {
           {/* Gallery Column */}
           <div className="lg:col-span-7 flex flex-col-reverse md:flex-row gap-space-md">
             {/* Gallery Thumbnails */}
-            <div className="flex md:flex-col gap-space-sm overflow-x-auto md:overflow-y-auto max-h-[500px]">
+            <div className="flex md:flex-col gap-space-sm overflow-x-auto md:overflow-y-auto max-h-[500px] no-scrollbar">
               {(product.gallery || [product.image]).map((imgUrl, i) => (
                 <button
                   key={i}
@@ -105,7 +105,7 @@ export default function ProductDetailPage() {
                 <label className="font-label-caps text-xs uppercase tracking-widest text-primary block mb-space-xs font-semibold">
                   Select Vessel Size
                 </label>
-                <div className="flex gap-space-sm">
+                <div className="flex gap-space-sm flex-wrap">
                   {product.volume.map((vol) => (
                     <button
                       key={vol}
@@ -148,7 +148,7 @@ export default function ProductDetailPage() {
                   onClick={() => addToCart(product, quantity, selectedVolume)}
                   className="flex-1 bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.2em] h-12 flex items-center justify-center hover:bg-tertiary-container transition-colors shadow-md"
                 >
-                  Add to Shopping Bag • {product.formattedPrice}
+                  Add to Bag • {product.formattedPrice}
                 </button>
               </div>
 
@@ -174,11 +174,11 @@ export default function ProductDetailPage() {
 
               {/* Tabs Section */}
               <div className="border-t border-surface-container-high pt-space-md">
-                <div className="flex gap-space-md border-b border-surface-container-high pb-space-xs mb-space-md">
+                <div className="flex gap-space-md border-b border-surface-container-high pb-space-xs mb-space-md overflow-x-auto no-scrollbar">
                   <button
                     type="button"
                     onClick={() => setActiveTab('notes')}
-                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors ${
+                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors whitespace-nowrap ${
                       activeTab === 'notes' ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant'
                     }`}
                   >
@@ -187,7 +187,7 @@ export default function ProductDetailPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('craft')}
-                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors ${
+                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors whitespace-nowrap ${
                       activeTab === 'craft' ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant'
                     }`}
                   >
@@ -196,7 +196,7 @@ export default function ProductDetailPage() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('ingredients')}
-                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors ${
+                    className={`font-label-caps text-xs uppercase tracking-widest pb-1 transition-colors whitespace-nowrap ${
                       activeTab === 'ingredients' ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant'
                     }`}
                   >
@@ -271,6 +271,21 @@ export default function ProductDetailPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Add-To-Cart Bar (Shown only on small/medium screens) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-surface-container-high p-3 flex items-center justify-between gap-3 shadow-2xl lg:hidden">
+        <div>
+          <span className="font-display text-sm font-medium text-primary block line-clamp-1">{product.name}</span>
+          <span className="font-body text-xs font-bold text-secondary">{product.formattedPrice}</span>
+        </div>
+        <button
+          type="button"
+          onClick={() => addToCart(product, quantity, selectedVolume)}
+          className="bg-primary text-on-primary font-label-caps text-xs uppercase tracking-[0.18em] px-4 py-2.5 hover:bg-tertiary-container transition-colors shadow-md flex-shrink-0"
+        >
+          Add to Bag
+        </button>
       </div>
     </main>
   );
